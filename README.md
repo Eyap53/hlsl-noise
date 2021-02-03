@@ -1,6 +1,6 @@
 # HSLS-Noise
 
-This repo aims to provide optimized hlsl translations of the glsl perlin noises implemented in this repo : https://github.com/ashima/webgl-noise/.
+This repo aims to provide optimized hlsl translations of the glsl perlin noises (classic and simplex) implemented in this repo : https://github.com/ashima/webgl-noise/.
 
 I decided to create this repo because the hsls noise projects that I found were either not maintained, not optimized, and/or not stating a license (thus not usable).
 
