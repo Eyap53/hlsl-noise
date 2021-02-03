@@ -42,17 +42,13 @@ float4 grad4(float j, float4 ip)
 
 float snoise(float4 v)
 {
-    const float4 B = float4(0.309016994374947451, // F4= (sqrt(5) - 1)/4
-                            0.309016994374947451, 
-                            0.309016994374947451, 
-                            0.309016994374947451); 
     const float4 C = float4(0.138196601125011, // G4= (5 - sqrt(5))/20
                             0.276393202250021, // 2 * G4
                             0.414589803375032, // 3 * G4
                             -0.447213595499958); // -1 + 4 * G4
 
     // First corner
-    float4 i = floor(v + dot(v, 0.309016994374947451));
+    float4 i = floor(v + dot(v, 0.309016994374947451)); // 0.309016994374947451 = (sqrt(5) - 1)/4
     float4 x0 = v - i + dot(i, C.xxxx);
 
     // Other corners
@@ -96,7 +92,10 @@ float snoise(float4 v)
 
     // Gradients: 7x7x6 points over a cube, mapped onto a 4-cross polytope
     // 7*7*6 = 294, which is close to the ring size 17*17 = 289.
-    float4 ip = float4(1.0 / 294.0, 1.0 / 49.0, 1.0 / 7.0, 0.0);
+    const float4 ip = float4(0.003401360544, // 1 / 294
+                             0.020408163265, // 1 / 49
+                             0.142857142857, // 1 / 7
+                             0.0);
 
     float4 p0 = grad4(j0, ip);
     float4 p1 = grad4(j1.x, ip);
@@ -120,11 +119,4 @@ float snoise(float4 v)
     return 49.0 * (dot(m0 * m0, float3(dot(p0, x0), dot(p1, x1), dot(p2, x2)))
                + dot(m1 * m1, float2(dot(p3, x3), dot(p4, x4))));
 
-}
-
-float scale;
-float4 main(in float2 uv: TEXCOORD0): SV_Target
-{
-    float4 aa = float4(uv.x, uv.y, 0, 0);
-    return snoise(scale * aa);
 }

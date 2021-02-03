@@ -27,7 +27,7 @@ float snoise(float3 v)
 
 	// Other corners
     float3 g = step(x0.yzx, x0.xyz);
-    float3 l = 1 - g;
+    float3 l = 1.0 - g;
     float3 i1 = min(g.xyz, l.zxy);
     float3 i2 = max(g.xyz, l.zxy);
 
@@ -48,13 +48,12 @@ float snoise(float3 v)
 
 	// Gradients: 7x7 points over a square, mapped onto an octahedron.
 	// The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)
-    float n_ = 0.142857142857; // 1/7
-    float3 ns = n_ * D.wyz - D.xzx;
+    float3 ns = 0.142857142857 * D.wyz - D.xzx; // 0.142857142857 = 1/7
 
-    float4 j = p - 49.0 * floor(p * ns.z * ns.z); //  mod(p,7*7)
+    float4 j = fmod(p, 49.0);
 
-    float4 x_ = floor(j * ns.z);
-    float4 y_ = floor(j - 7.0 * x_); // mod(j,N)
+    float4 x_ = floor(j * 0.142857142857); // j * 1/7
+    float4 y_ = floor(j - 7.0 * x_);
 
     float4 x = x_ * ns.x + ns.yyyy;
     float4 y = y_ * ns.x + ns.yyyy;
