@@ -5,21 +5,9 @@
 //               Distributed under the MIT License. See LICENSE file.
 // 
 
-float Scale;
-
-float3 mod289(float3 x)
-{
-    return x - floor(x / 289.0) * 289.0;
-}
-
-float4 mod289(float4 x)
-{
-    return x - floor(x / 289.0) * 289.0;
-}
-
 float4 permute(float4 x)
 {
-    return mod289((x * 34.0 + 1.0) * x);
+    return fmod((x * 34.0 + 1.0) * x, 289.0);
 }
 
 float4 taylorInvSqrt(float4 r)
@@ -29,7 +17,7 @@ float4 taylorInvSqrt(float4 r)
 
 float snoise(float3 v)
 {
-    const float2 C = float2(1.0 / 6.0, 1.0 / 3.0);
+    const float2 C = float2(0.166666666666666667, 0.333333333333333333); //float2( 1/6, 1/3)
     const float4 D = float4(0.0, 0.5, 1.0, 2.0);
 
 	// First corner
@@ -38,7 +26,7 @@ float snoise(float3 v)
 
 	// Other corners
     float3 g = step(x0.yzx, x0.xyz);
-    float3 l = 1.0 - g;
+    float3 l = 1 - g;
     float3 i1 = min(g.xyz, l.zxy);
     float3 i2 = max(g.xyz, l.zxy);
 
@@ -47,11 +35,10 @@ float snoise(float3 v)
  	//   x2 = x0 - i2  + 2.0 * C.xxx;
   	//   x3 = x0 - 1.0 + 3.0 * C.xxx;
     float3 x1 = x0 - i1 + C.xxx;
-    float3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y
-    float3 x3 = x0 - D.yyy; // -1.0+3.0*C.x = -0.5 = -D.y
+    float3 x2 = x0 - i2 + C.yyy; // 2 * C.x = 1/3 = C.y
+    float3 x3 = x0 - D.yyy;      // -1 + 3 * C.x = -0.5 = -D.y
 
 	// Permutations
-    i = mod289(i);
     i = fmod(i, 289.0);
     float4 p = permute(permute(permute(
              i.z + float4(0.0, i1.z, i2.z, 1.0))
@@ -60,7 +47,7 @@ float snoise(float3 v)
 
 	// Gradients: 7x7 points over a square, mapped onto an octahedron.
 	// The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)
-    float n_ = 0.142857142857; // 1.0/7.0
+    float n_ = 0.142857142857; // 1/7
     float3 ns = n_ * D.wyz - D.xzx;
 
     float4 j = p - 49.0 * floor(p * ns.z * ns.z); //  mod(p,7*7)
@@ -101,10 +88,4 @@ float snoise(float3 v)
     m = m * m;
     return 105.0 * dot(m * m, float4(dot(p0, x0), dot(p1, x1),
                                 dot(p2, x2), dot(p3, x3)));
-}
-
-float4 main(in float2 uv: TEXCOORD0): SV_Target
-{
-    float3 aa = float3(uv.x, uv.y, 0);
-    return snoise(Scale * aa);
 }
