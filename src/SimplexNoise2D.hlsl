@@ -1,7 +1,8 @@
 //
 // Description : Array and textureless HLSL 2D simplex noise function.
-//      Author : Lacour Mael.
-//     License : Copyright (C) 2021 Lacour Mael. All rights reserved.
+//     License : Copyright for the original glsl algorithms are held by (c) 2011, Ashima Arts (Simplex noise) 
+//               and (c) 2011-2016, Stefan Gustavson (Classic noise and others), and are provided under the MIT License.
+//               Copyright (C) 2021 Lacour Mael.
 //               Distributed under the MIT License. See LICENSE file.
 // 
 
