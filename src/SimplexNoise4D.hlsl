@@ -6,24 +6,14 @@
 //               Distributed under the MIT License. See LICENSE file.
 // 
 
-float4 mod289(float4 x)
-{
-    return x - floor(x * (1.0 / 289.0)) * 289.0;
-}
-
-float mod289(float x)
-{
-    return x - floor(x * (1.0 / 289.0)) * 289.0;
-}
-
 float4 permute(float4 x)
 {
-    return mod289(((x * 34.0) + 1.0) * x);
+    return fmod(((x * 34.0) + 1.0) * x, 289.0);
 }
 
 float permute(float x)
 {
-    return mod289(((x * 34.0) + 1.0) * x);
+    return fmod(((x * 34.0) + 1.0) * x, 289.0);
 }
 
 float4 taylorInvSqrt(float4 r)
@@ -43,14 +33,12 @@ float4 grad4(float j, float4 ip)
 
     p.xyz = floor(frac(float3(j, j, j) * ip.xyz) * 7.0) * ip.z - 1.0;
     p.w = 1.5 - dot(abs(p.xyz), ones.xyz);
-    s = float4(1 - step(0.0, p)); // p.xyzw < 0 ?
-    p.xyz = p.xyz + (s.xyz * 2.0 - 1.0) * s.www;
+    // s = float4(1 - step(0.0, p)); // p.xyzw < 0
+    p.xyz -= sign(p.xyz) * (p.w < 0.0);
 
     return p;
 }
 						
-
-#define F4 0.309016994374947451
 
 float snoise(float4 v)
 {
@@ -64,7 +52,7 @@ float snoise(float4 v)
                             -0.447213595499958); // -1 + 4 * G4
 
     // First corner
-    float4 i = floor(v + dot(v, float4(B)));
+    float4 i = floor(v + dot(v, 0.309016994374947451));
     float4 x0 = v - i + dot(i, C.xxxx);
 
     // Other corners
@@ -98,7 +86,7 @@ float snoise(float4 v)
     float4 x4 = x0 + C.wwww;
 
     // Permutations
-    i = mod289(i);
+    i = fmod(i, 289.0);
     float j0 = permute(permute(permute(permute(i.w) + i.z) + i.y) + i.x);
     float4 j1 = permute(permute(permute(permute(
              i.w + float4(i1.w, i2.w, i3.w, 1.0))
@@ -132,4 +120,11 @@ float snoise(float4 v)
     return 49.0 * (dot(m0 * m0, float3(dot(p0, x0), dot(p1, x1), dot(p2, x2)))
                + dot(m1 * m1, float2(dot(p3, x3), dot(p4, x4))));
 
+}
+
+float scale;
+float4 main(in float2 uv: TEXCOORD0): SV_Target
+{
+    float4 aa = float4(uv.x, uv.y, 0, 0);
+    return snoise(scale * aa);
 }
