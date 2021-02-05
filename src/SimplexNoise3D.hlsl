@@ -183,5 +183,5 @@ void SimplexNoise3D_float(float3 input, out float output)
 
 void SimplexNoise3DGradient_float(float3 input, out float output, out float3 grad)
 {
-    output = snoise_grad(input, out grad);
+    output = snoise_grad(input, grad);
 }
