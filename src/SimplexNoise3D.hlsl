@@ -172,3 +172,16 @@ float snoise_grad(float3 v, out float3 gradient)
 
     return 105.0 * dot(m4, pdotx);
 }
+
+
+// Required for Unity. Just an box for the previous methods.
+
+void SimplexNoise3D_float(float3 input, out float output)
+{
+    output = snoise(input);
+}
+
+void SimplexNoise3DGradient_float(float3 input, out float output, out float3 grad)
+{
+    output = snoise_grad(input, out grad);
+}

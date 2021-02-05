@@ -63,3 +63,10 @@ float snoise(float2 v)
     g.yz = a0.yz * x12.xz + h.yz * x12.yw;
     return 130.0 * dot(m, g);
 }
+
+// Required for Unity. Just an box for the previous method.
+
+void SimplexNoise2D_float(float2 input, out float output)
+{
+    output = snoise(input);
+}

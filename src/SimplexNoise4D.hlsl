@@ -120,3 +120,10 @@ float snoise(float4 v)
                + dot(m1 * m1, float2(dot(p3, x3), dot(p4, x4))));
 
 }
+
+// Required for Unity. Just an box for the previous methods.
+
+void SimplexNoise4D_float(float4 input, out float output)
+{
+    output = snoise(input);
+}
