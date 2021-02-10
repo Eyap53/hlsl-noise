@@ -9,7 +9,7 @@
 
 float3 mod289(float3 x)
 {
-    return x - floor(x * (1.0 / 289.0)) * 289.0;
+    return x - floor(x * (1.0 / 289.0)) * 289.0; // Let 1 / 289 for compilation optimizations.
 }
 
 float4 mod289(float4 x)

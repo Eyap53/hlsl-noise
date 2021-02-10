@@ -6,9 +6,19 @@
 //               Distributed under the MIT License. See LICENSE file.
 // 
 
+float2 mod289(float2 x)
+{
+    return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+
+float3 mod289(float3 x)
+{
+    return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+
 float3 permute(float3 x)
 {
-    return fmod(((x * 34.0) + 1.0) * x, 289.0);
+    return mod289((x * 34.0 + 1.0) * x);
 }
 
 float3 taylorInvSqrt(float3 r)
@@ -37,7 +47,7 @@ float snoise(float2 v)
     x12.xy -= i1;
 
     // Permutations
-    i = fmod(i, 289.0); // Avoid truncation effects in permutation
+    i = mod289(i); // Avoid truncation effects in permutation
     float3 p = permute(permute(i.y + float3(0.0, i1.y, 1.0))
 		+ i.x + float3(0.0, i1.x, 1.0));
 

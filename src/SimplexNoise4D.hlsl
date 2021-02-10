@@ -6,14 +6,24 @@
 //               Distributed under the MIT License. See LICENSE file.
 // 
 
+float3 mod289(float3 x)
+{
+    return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+
+float4 mod289(float4 x)
+{
+    return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+
 float4 permute(float4 x)
 {
-    return fmod(((x * 34.0) + 1.0) * x, 289.0);
+    return mod289((x * 34.0 + 1.0) * x);
 }
 
 float permute(float x)
 {
-    return fmod(((x * 34.0) + 1.0) * x, 289.0);
+    return mod289((x * 34.0 + 1.0) * x);
 }
 
 float4 taylorInvSqrt(float4 r)
@@ -82,7 +92,7 @@ float snoise(float4 v)
     float4 x4 = x0 + C.wwww;
 
     // Permutations
-    i = fmod(i, 289.0);
+    i = mod289(i);
     float j0 = permute(permute(permute(permute(i.w) + i.z) + i.y) + i.x);
     float4 j1 = permute(permute(permute(permute(
              i.w + float4(i1.w, i2.w, i3.w, 1.0))
