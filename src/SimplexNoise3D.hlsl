@@ -7,9 +7,19 @@
 // 
 // TODO: Test the performance of fmod (x, 289.0). May be inferior with the use of pre-computed 1 / 289.0 value.
 
+float3 mod289(float3 x)
+{
+    return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+
+float4 mod289(float4 x)
+{
+    return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+
 float4 permute(float4 x)
 {
-    return fmod((x * 34.0 + 1.0) * x, 289.0);
+    return mod289((x * 34.0 + 1.0) * x);
 }
 
 float4 taylorInvSqrt(float4 r)
@@ -41,7 +51,7 @@ float snoise(float3 v)
     float3 x3 = x0 - D.yyy;      // -1 + 3 * C.x = -0.5 = -D.y
 
     // Permutations
-    i = fmod(i, 289.0);
+    i = mod289(i);
     float4 p = permute(permute(permute(
              i.z + float4(0.0, i1.z, i2.z, 1.0))
            + i.y + float4(0.0, i1.y, i2.y, 1.0))
@@ -49,12 +59,13 @@ float snoise(float3 v)
 
     // Gradients: 7x7 points over a square, mapped onto an octahedron.
     // The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)
-    float3 ns = 0.142857142857 * D.wyz - D.xzx; // 0.142857142857 = 1/7
+    float n_ = 0.142857142857; // 1.0/7.0
+    float2 ns = n_ * D.wy - D.xz;
 
-    float4 j = fmod(p, 49.0);
+    float4 j = p - 49.0 * floor(p * n_ * n_); //  mod(p,7*7)
 
-    float4 x_ = floor(j * 0.142857142857); // j * 1/7
-    float4 y_ = floor(j - 7.0 * x_);
+    float4 x_ = floor(j * n_);
+    float4 y_ = floor(j - 7.0 * x_); // mod(j,N)
 
     float4 x = x_ * ns.x + ns.yyyy;
     float4 y = y_ * ns.x + ns.yyyy;
@@ -114,8 +125,8 @@ float snoise_grad(float3 v, out float3 gradient)
     float3 x2 = x0 - i2 + C.yyy; // 2 * C.x = 1/3 = C.y
     float3 x3 = x0 - D.yyy;      // -1 + 3 * C.x = -0.5 = -D.y
 
-    // Permutations
-    i = fmod(i, 289.0);
+	// Permutations
+    i = mod289(i);
     float4 p = permute(permute(permute(
              i.z + float4(0.0, i1.z, i2.z, 1.0))
            + i.y + float4(0.0, i1.y, i2.y, 1.0))
@@ -123,12 +134,13 @@ float snoise_grad(float3 v, out float3 gradient)
 
     // Gradients: 7x7 points over a square, mapped onto an octahedron.
     // The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)
-    float3 ns = 0.142857142857 * D.wyz - D.xzx; // 0.142857142857 = 1/7
+    float n_ = 0.142857142857; // 1.0/7.0
+    float2 ns = n_ * D.wy - D.xz;
 
-    float4 j = fmod(p, 49.0);
+    float4 j = p - 49.0 * floor(p * n_ * n_); //  mod(p,7*7)
 
-    float4 x_ = floor(j * 0.142857142857); // j * 1/7
-    float4 y_ = floor(j - 7.0 * x_);
+    float4 x_ = floor(j * n_);
+    float4 y_ = floor(j - 7.0 * x_); // mod(j,N)
 
     float4 x = x_ * ns.x + ns.yyyy;
     float4 y = y_ * ns.x + ns.yyyy;
