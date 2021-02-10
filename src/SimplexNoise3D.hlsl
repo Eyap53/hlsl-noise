@@ -186,7 +186,7 @@ float snoise_grad(float3 v, out float3 gradient)
 }
 
 
-// Required for Unity. Just an box for the previous methods.
+// Required for Unity. Just boxes for the previous methods.
 
 void SimplexNoise3D_float(float3 input, out float output)
 {
