@@ -6,7 +6,7 @@
 //               Distributed under the MIT License. See LICENSE file.
 // 
 
-float3 mod289(float3 x)
+float mod289(float x)
 {
     return x - floor(x * (1.0 / 289.0)) * 289.0;
 }
