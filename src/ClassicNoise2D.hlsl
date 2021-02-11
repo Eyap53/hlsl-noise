@@ -29,7 +29,7 @@ float2 fade(float2 t) {
 float cnoise(float2 P)
 {
   float4 Pi = floor(P.xyxy) + float4(0.0, 0.0, 1.0, 1.0);
-  float4 Pf = fract(P.xyxy) - float4(0.0, 0.0, 1.0, 1.0);
+  float4 Pf = frac(P.xyxy) - float4(0.0, 0.0, 1.0, 1.0);
   Pi = mod289(Pi); // To avoid truncation effects in permutation
   float4 ix = Pi.xzxz;
   float4 iy = Pi.yyww;
@@ -38,7 +38,7 @@ float cnoise(float2 P)
 
   float4 i = permute(permute(ix) + iy);
 
-  float4 gx = fract(i * (1.0 / 41.0)) * 2.0 - 1.0 ;
+  float4 gx = frac(i * (1.0 / 41.0)) * 2.0 - 1.0 ;
   float4 gy = abs(gx) - 0.5 ;
   float4 tx = floor(gx + 0.5);
   gx = gx - tx;
@@ -60,8 +60,8 @@ float cnoise(float2 P)
   float n11 = dot(g11, float2(fx.w, fy.w));
 
   float2 fade_xy = fade(Pf.xy);
-  float2 n_x = mix(float2(n00, n01), float2(n10, n11), fade_xy.x);
-  float n_xy = mix(n_x.x, n_x.y, fade_xy.y);
+  float2 n_x = lerp(float2(n00, n01), float2(n10, n11), fade_xy.x);
+  float n_xy = lerp(n_x.x, n_x.y, fade_xy.y);
   return 2.3 * n_xy;
 }
 
@@ -69,8 +69,8 @@ float cnoise(float2 P)
 float pnoise(float2 P, float2 rep)
 {
   float4 Pi = floor(P.xyxy) + float4(0.0, 0.0, 1.0, 1.0);
-  float4 Pf = fract(P.xyxy) - float4(0.0, 0.0, 1.0, 1.0);
-  Pi = mod(Pi, rep.xyxy); // To create noise with explicit period
+  float4 Pf = frac(P.xyxy) - float4(0.0, 0.0, 1.0, 1.0);
+  Pi = fmod(Pi, rep.xyxy); // To create noise with explicit period
   Pi = mod289(Pi);        // To avoid truncation effects in permutation
   float4 ix = Pi.xzxz;
   float4 iy = Pi.yyww;
@@ -79,7 +79,7 @@ float pnoise(float2 P, float2 rep)
 
   float4 i = permute(permute(ix) + iy);
 
-  float4 gx = fract(i * (1.0 / 41.0)) * 2.0 - 1.0 ;
+  float4 gx = frac(i * (1.0 / 41.0)) * 2.0 - 1.0 ;
   float4 gy = abs(gx) - 0.5 ;
   float4 tx = floor(gx + 0.5);
   gx = gx - tx;
@@ -101,8 +101,8 @@ float pnoise(float2 P, float2 rep)
   float n11 = dot(g11, float2(fx.w, fy.w));
 
   float2 fade_xy = fade(Pf.xy);
-  float2 n_x = mix(float2(n00, n01), float2(n10, n11), fade_xy.x);
-  float n_xy = mix(n_x.x, n_x.y, fade_xy.y);
+  float2 n_x = lerp(float2(n00, n01), float2(n10, n11), fade_xy.x);
+  float n_xy = lerp(n_x.x, n_x.y, fade_xy.y);
   return 2.3 * n_xy;
 }
 
