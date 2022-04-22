@@ -18,12 +18,12 @@ float4 mod289(float4 x)
 
 float4 permute(float4 x)
 {
-    return mod289((x * 34.0 + 1.0) * x);
+    return mod289((x * 34.0 + 10.0) * x);
 }
 
 float permute(float x)
 {
-    return mod289((x * 34.0 + 1.0) * x);
+    return mod289((x * 34.0 + 10.0) * x);
 }
 
 float4 taylorInvSqrt(float4 r)
