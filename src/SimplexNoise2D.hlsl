@@ -18,7 +18,7 @@ float3 mod289(float3 x)
 
 float3 permute(float3 x)
 {
-    return mod289((x * 34.0 + 1.0) * x);
+    return mod289((x * 34.0 + 10.0) * x);
 }
 
 float3 taylorInvSqrt(float3 r)
